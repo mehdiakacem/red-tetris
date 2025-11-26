@@ -4,7 +4,12 @@
   "description": "This project, Red Tetris, aims to build a fully functional online, real-time multiplayer Tetris game, developed entirely with Full Stack JavaScript.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:server": "nodemon server/index.js",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "cd client && npm run build",
+    "start": "node server/index.js",
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -23,6 +28,7 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.11"
   }
 }
