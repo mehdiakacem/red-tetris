@@ -1,0 +1,21 @@
+{
+  "name": "red-tetris",
+  "version": "1.0.0",
+  "description": "This project, Red Tetris, aims to build a fully functional online, real-time multiplayer Tetris game, developed entirely with Full Stack JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mehdiakacem/red-tetris.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mehdiakacem/red-tetris/issues"
+  },
+  "homepage": "https://github.com/mehdiakacem/red-tetris#readme"
+}
