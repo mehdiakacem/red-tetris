@@ -24,6 +24,12 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Enforce functional style - no "this"
+      'no-invalid-this': 'error',
+      'no-useless-constructor': 'error',
+      'no-empty-function': 'error',
+      // Enforce arrow functions for callbacks
+      'prefer-arrow-callback': 'error',
     },
   },
 ])
