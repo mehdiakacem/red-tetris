@@ -42,3 +42,5 @@ export const TETROMINOS = {
     [0,0,0,0],
   ],
 };
+
+export const PIECE_TYPES = Object.keys(TETROMINOS);
