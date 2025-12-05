@@ -21,9 +21,9 @@ export function gravityTick(board, piece, queue) {
 
   const boardAfterMerge = mergePiece(board, piece.matrix, piece.x, piece.y);
 
-  const { newBoard, linesCleared, rowsRemoved } = clearLines(boardAfterMerge);
+  const { board: newBoard, linesCleared, rowsRemoved } = clearLines(boardAfterMerge);
 
-  const { nextPiece, nextQueue } = spawnPiece(queue);
+  const { piece: nextPiece, queue: nextQueue } = spawnPiece(queue);
 
   const gameOver = !isValidPosition(
     nextPiece.matrix,
