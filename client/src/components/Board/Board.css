@@ -1,6 +1,6 @@
 .board {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);;
+  grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(20, 1fr);
 
   width: 300px;
@@ -11,10 +11,16 @@
 }
 
 .cell {
-  border: thin solid #222;
+  border: 1px solid #222;
   background: #000;
+  box-sizing: border-box;
 }
 
-.cell.filled {
-  background: red;
-}
+
+.cyan { background: cyan; }
+.yellow { background: yellow; }
+.purple { background: purple; }
+.green { background: green; }
+.red { background: red; }
+.blue { background: blue; }
+.orange { background: orange; }
