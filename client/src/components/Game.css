@@ -1,0 +1,4 @@
+.game-container {
+  display: flex;
+  gap: 16px;
+}

@@ -1,32 +1,29 @@
 import "./Board.css";
 
-const PIECE_COLORS = {
-  I: "cyan",
-  O: "yellow",
-  T: "purple",
-  S: "green",
-  Z: "red",
-  J: "blue",
-  L: "orange",
-  0: "",
-};
-
 export default function Board({ board, activePiece }) {
+  const PIECE_COLORS = {
+    I: "cyan",
+    O: "yellow",
+    T: "purple",
+    S: "green",
+    Z: "red",
+    J: "blue",
+    L: "orange",
+    0: "",
+  };
   return (
     <div className="board">
       {board.map((row, y) =>
-        row.map((cellType, x) => {
-          return (
-            <Cell
-              key={`${x}-${y}`}
-              color={
-                isActiveCell(x, y, activePiece)
-                  ? PIECE_COLORS[activePiece.type]
-                  : PIECE_COLORS[cellType]
-              }
-            />
-          );
-        })
+        row.map((cellType, x) => (
+          <Cell
+            key={`${x}-${y}`}
+            color={
+              isActiveCell(x, y, activePiece)
+                ? PIECE_COLORS[activePiece.type]
+                : PIECE_COLORS[cellType]
+            }
+          />
+        ))
       )}
     </div>
   );

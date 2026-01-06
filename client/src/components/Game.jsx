@@ -8,6 +8,8 @@ import { rotatePiece } from "../logic/rotatePiece";
 import { softDrop } from "../logic/softDrop";
 import { spawnPiece } from "../logic/spawnPiece";
 import Board from "./Board/Board";
+import NextPiece from "./NextPice/NextPiece";
+import "./Game.css";
 
 function Game() {
   const [game, setGame] = useState(() => {
@@ -59,13 +61,20 @@ function Game() {
     const intervalId = setInterval(() => {
       setGame((prev) => gravityTick(prev.board, prev.piece, prev.queue));
     }, 700);
-    return () => {      
+    return () => {
       clearInterval(intervalId);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [game.gameOver]);
 
-  return <Board board={game.board} activePiece={game.piece} />;
+  const nextPieceType = game.queue[0];
+
+  return (
+    <div className="game-container">
+      <Board board={game.board} activePiece={game.piece} />
+      <NextPiece type={nextPieceType} />
+    </div>
+  );
 }
 
 export default Game;

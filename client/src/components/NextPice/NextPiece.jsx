@@ -1,0 +1,37 @@
+import React from "react";
+import "./NextPiece.css";
+import { TETROMINOS } from "../../logic/tetrominos";
+
+const NextPiece = ({ type }) => {
+  const PIECE_COLORS = {
+    I: "cyan",
+    O: "yellow",
+    T: "purple",
+    S: "green",
+    Z: "red",
+    J: "blue",
+    L: "orange",
+    0: "",
+  };
+  if (!type) {
+    return <div className="next-piece-container">No next piece</div>;
+  }
+  const pieceMatrix = TETROMINOS[type];
+  return (
+    <div className="next-piece-container">
+      <h2>Next Piece</h2>
+      <div className="next-piece-grid">
+        {pieceMatrix.map((row, y) =>
+          row.map((cell, x) => (
+            <div
+              key={`${x}-${y}`}
+              className={`next-piece-cell ${cell ? PIECE_COLORS[type] : ""}`}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default NextPiece;
