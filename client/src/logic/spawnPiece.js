@@ -1,17 +1,13 @@
+import { refillQueue } from "./generateBag";
+import { spawnNewPiece } from "./spawnNewPiece";
+
 export function spawnPiece(queue) {
-  const [next, ...rest] = queue;
+  const nextQueue = refillQueue(queue);
 
-  const pieceWidth = next.matrix[0].length;
-  const startX = Math.floor((10 - pieceWidth) / 2);
-
+  const type = nextQueue[0];
+  const remainingQueue = nextQueue.slice(1);
   return {
-    piece: {
-      matrix: next.matrix.map(row => row.slice()),
-      x: startX,
-      y: 0,
-      rotation: 0,
-      type: next.type,
-    },
-    queue: rest,
+    piece: spawnNewPiece(type),
+    queue: remainingQueue,
   };
 }

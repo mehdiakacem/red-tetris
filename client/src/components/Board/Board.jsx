@@ -1,21 +1,39 @@
 import "./Board.css";
-import { PIECE_COLORS } from "../../logic/pieceColors.js";
+
+const PIECE_COLORS = {
+  I: "cyan",
+  O: "yellow",
+  T: "purple",
+  S: "green",
+  Z: "red",
+  J: "blue",
+  L: "orange",
+  0: "",
+};
 
 export default function Board({ board, activePiece }) {
   return (
     <div className="board">
       {board.map((row, y) =>
-        row.map((cell, x) => {
-          const cellValue =
-            cell || (isActiveCell(x, y, activePiece) ? activePiece.type : null);
-
-          const colorClass = cellValue ? PIECE_COLORS[cellValue] : "";
-
-          return <div key={`${y}-${x}`} className={`cell ${colorClass}`} />;
+        row.map((cellType, x) => {
+          return (
+            <Cell
+              key={`${x}-${y}`}
+              color={
+                isActiveCell(x, y, activePiece)
+                  ? PIECE_COLORS[activePiece.type]
+                  : PIECE_COLORS[cellType]
+              }
+            />
+          );
         })
       )}
     </div>
   );
+}
+
+function Cell({ color }) {
+  return <div className={`cell ${color}`} />;
 }
 
 function isActiveCell(x, y, piece) {

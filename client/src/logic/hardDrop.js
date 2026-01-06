@@ -1,6 +1,7 @@
 import { clearLines } from "./clearLines.js";
 import { isValidPosition } from "./isValidPosition.js";
 import { mergePiece } from "./mergePiece.js";
+import { spawnPiece } from "./spawnPiece.js";
 
 /**
  * board: current board (20x10)
@@ -8,7 +9,7 @@ import { mergePiece } from "./mergePiece.js";
  *
  * Returns an object with newBoard, placedPiece (with final x,y), linesCleared, rows.
  */
-export function hardDrop(piece, board) {
+export function hardDrop(piece, board, queue) {
   const { matrix, x: startX } = piece;
   let y = piece.y;
 
@@ -21,18 +22,36 @@ export function hardDrop(piece, board) {
   const placedPiece = { ...piece, x: startX, y };
 
   // Merge piece into new board
-  const merged = mergePiece(board, matrix, placedPiece.x, placedPiece.y, 1);
+  const boardAfterMerge = mergePiece(
+    board,
+    matrix,
+    placedPiece.x,
+    placedPiece.y,
+    placedPiece.type
+  );
 
   const {
-    board: boardAfterClear,
+    board: newBoard,
     linesCleared,
     rowsRemoved,
-  } = clearLines(merged);
+  } = clearLines(boardAfterMerge);
+
+  const { piece: nextPiece, queue: nextQueue } = spawnPiece(queue);
+
+  const gameOver = !isValidPosition(
+    nextPiece.matrix,
+    newBoard,
+    nextPiece.x,
+    nextPiece.y
+  );
 
   return {
-    board: boardAfterClear,
-    placedPiece,
+    board: newBoard,
+    piece: nextPiece,
+    queue: nextQueue,
+    locked: true,
     linesCleared,
-    rows: rowsRemoved,
+    rowsRemoved,
+    gameOver,
   };
 }

@@ -19,7 +19,7 @@ export function gravityTick(board, piece, queue) {
     };
   }
 
-  const boardAfterMerge = mergePiece(board, piece.matrix, piece.x, piece.y);
+  const boardAfterMerge = mergePiece(board, piece.matrix, piece.x, piece.y, piece.type);
 
   const { board: newBoard, linesCleared, rowsRemoved } = clearLines(boardAfterMerge);
 
