@@ -1,0 +1,35 @@
+.next-piece-container {
+}
+
+.next-piece-container h2 {
+
+}
+
+.next-piece-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  width: 120px;
+  height: 120px;
+  background: #111;
+  border: 2px solid #444;
+}
+
+.next-piece-cell {
+  border: 1px solid #222;
+  background: #000;
+  box-sizing: border-box;
+}
+
+.next-piece-cell.filled {
+  background-color: #ff6b6b;
+  border-color: #cc5555;
+}
+
+.cyan { background: cyan; }
+.yellow { background: yellow; }
+.purple { background: purple; }
+.green { background: green; }
+.red { background: red; }
+.blue { background: blue; }
+.orange { background: orange; }
