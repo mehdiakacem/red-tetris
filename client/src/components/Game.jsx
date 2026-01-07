@@ -72,7 +72,7 @@ function Game() {
   return (
     <main className="game-container">
       <div className="spectrums-container">
-        <h2>Spectrums</h2>
+        <h3>Spectrums</h3>
       </div>
       <Board board={game.board} activePiece={game.piece} />
       <NextPiece type={nextPieceType} />
