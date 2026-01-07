@@ -8,7 +8,7 @@ import { rotatePiece } from "../logic/rotatePiece";
 import { softDrop } from "../logic/softDrop";
 import { spawnPiece } from "../logic/spawnPiece";
 import Board from "./Board/Board";
-import NextPiece from "./NextPice/NextPiece";
+import NextPiece from "./NextPiece/NextPiece";
 import "./Game.css";
 
 function Game() {
@@ -70,10 +70,13 @@ function Game() {
   const nextPieceType = game.queue[0];
 
   return (
-    <div className="game-container">
+    <main className="game-container">
+      <div className="spectrums-container">
+        <h2>Spectrums</h2>
+      </div>
       <Board board={game.board} activePiece={game.piece} />
       <NextPiece type={nextPieceType} />
-    </div>
+    </main>
   );
 }
 

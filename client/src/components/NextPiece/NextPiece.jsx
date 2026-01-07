@@ -19,7 +19,7 @@ const NextPiece = ({ type }) => {
   const pieceMatrix = TETROMINOS[type];
   return (
     <div className="next-piece-container">
-      <h2>Next Piece</h2>
+      <h3>Next Piece</h3>
       <div className="next-piece-grid">
         {pieceMatrix.map((row, y) =>
           row.map((cell, x) => (
