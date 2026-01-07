@@ -18,13 +18,8 @@
 .next-piece-cell {
   border: 1px solid #222;
   background: #000;
-  box-sizing: border-box;
 }
 
-.next-piece-cell.filled {
-  background-color: #ff6b6b;
-  border-color: #cc5555;
-}
 
 .cyan { background: cyan; }
 .yellow { background: yellow; }
@@ -33,3 +28,19 @@
 .red { background: red; }
 .blue { background: blue; }
 .orange { background: orange; }
+
+@media screen and (max-width: 768px) {
+  .next-piece-grid {
+    width: 100px;
+    height: 100px;
+    
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .next-piece-grid {
+    width: 90px;
+    height: 90px;
+  }
+  
+}
