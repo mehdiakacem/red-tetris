@@ -1,6 +1,48 @@
+import { useState } from "react";
 import "./Board.css";
+import { Link } from "react-router";
 
 export default function Board({ board, activePiece }) {
+  const [playerName, setPlayerName] = useState("");
+  const [room, setRoom] = useState("");
+  const handlePlayerNameChange = (e) => {
+    setPlayerName(e.target.value);
+  };
+  const handleRoomChange = (e) => {
+    setRoom(e.target.value);
+  };
+
+  if (!board) {
+    return (
+      <div className="board">
+        <form onSubmit={(e) => e.preventDefault()} className="start-form">
+          <input
+            onChange={handlePlayerNameChange}
+            type="text"
+            placeholder="Enter player name"
+            value={playerName}
+          />
+          <input
+            onChange={handleRoomChange}
+            type="text"
+            placeholder="Enter room name"
+            value={room}
+          />
+          <Link
+            to={`${room}/${playerName}`}
+            style={
+              playerName.trim() === "" || room.trim() === ""
+                ? { cursor: "not-allowed", backgroundColor: "darkgreen" }
+                : { cursor: "pointer" }
+            }
+          >
+            JOIN
+          </Link>
+        </form>
+      </div>
+    );
+  }
+
   const PIECE_COLORS = {
     I: "cyan",
     O: "yellow",

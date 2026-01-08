@@ -74,8 +74,9 @@ function Game() {
       <div className="spectrums-container">
         <h3>Spectrums</h3>
       </div>
-      <Board board={game.board} activePiece={game.piece} />
-      <NextPiece type={nextPieceType} />
+      <Board board={null} activePiece={null} />
+      <NextPiece nextPieceType={nextPieceType} />
+
     </main>
   );
 }
