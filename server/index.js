@@ -14,7 +14,15 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
-  socket.emit("hello", "world");
+  socket.on("join-room", ({ room, playerName }) => {
+    socket.join(room);
+    console.log(`${playerName} joined ${room}`);
+
+    // io.to(room).emit("player-joined", {
+    //   id: socket.id,
+    //   playerName,
+    // });
+  });
 
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);

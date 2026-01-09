@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import "./JoinGameForm.css";
 
-export function JoinGameForm() {
+export default function JoinGameForm() {
   const navigate = useNavigate();
 
   const [playerName, setPlayerName] = useState("");
