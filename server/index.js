@@ -14,15 +14,22 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
+
   socket.on("join-room", ({ room, playerName }) => {
     socket.join(room);
     console.log(`${playerName} joined ${room}`);
 
   });
+
   socket.on("player-input", ({ action }) => {
     console.log(`Received action from ${socket.id}: ${action}`);
     // Here you would handle the game logic based on player input
     
+  });
+
+  socket.on("start-game", ({ room }) => {
+    console.log(`Starting game in room: ${room}`);
+    io.to(room).emit("game-started");
   });
 
   socket.on("disconnect", () => {
