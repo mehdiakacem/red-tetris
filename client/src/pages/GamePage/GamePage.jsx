@@ -1,12 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Board from "../../components/Board/Board.jsx";
 import NextPiece from "../../components/NextPiece/NextPiece.jsx";
 import Spectrums from "../../components/Spectrums/Spectrums.jsx";
 import { socket } from "../../socket.js";
 import { useParams } from "react-router";
+import EmptyBoard from "../../components/EmptyBoard/EmptyBoard.jsx";
+import StartButton from "../../components/StartButton/StartButton.jsx";
 
 function GamePage() {
   let { room, playerName } = useParams();
+  const [isGameStarted, setIsGameStarted] = useState(false);
+
   useEffect(() => {
     socket.connect();
 
@@ -18,6 +22,10 @@ function GamePage() {
       });
     });
 
+    socket.on("player-joined", ({ playerName }) => {
+      console.log(`${playerName} has joined the room.`);
+    });
+
     const emitInput = (action) => {
       socket.emit("player-input", {
         action,
@@ -26,7 +34,7 @@ function GamePage() {
     };
 
     const handleKeyDown = (e) => {
-      if (e.repeat) return; // prevent key hold spam  
+      if (e.repeat) return; // prevent key hold spam
 
       switch (e.code) {
         case "ArrowLeft":
@@ -51,16 +59,34 @@ function GamePage() {
 
     window.addEventListener("keydown", handleKeyDown);
 
+    socket.on("game-started", () => {
+      console.log("Game started!");
+      // Here you would typically set some state to indicate the game has started
+      setIsGameStarted(true);
+    });
+
     return () => {
       socket.off("connect");
+      socket.off("game-started");
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [room, playerName]);
+
+  const handleStartClick = () => {
+    socket.emit("start-game", { room: room });
+  };
+
   return (
     <>
       <Spectrums />
-      <Board />
+      {isGameStarted ? (
+        <Board />
+      ) : (
+        <EmptyBoard>
+          <StartButton onClick={handleStartClick} />
+        </EmptyBoard>
+      )}
       <NextPiece />
     </>
   );
