@@ -1,6 +1,9 @@
 import "./Board.css";
 
 export default function Board({ board, activePiece }) {
+  if (!board) {
+    return <div className="board"></div>;
+  }
   const PIECE_COLORS = {
     I: "cyan",
     O: "yellow",

@@ -3,6 +3,14 @@ import "./NextPiece.css";
 import { TETROMINOS } from "../../logic/tetrominos";
 
 const NextPiece = ({ type }) => {
+  if (!type) {
+    return (
+      <div className="next-piece-container">
+        <h3>Next Piece</h3>
+        <div className="next-piece-grid"></div>
+      </div>
+    );
+  }
   const PIECE_COLORS = {
     I: "cyan",
     O: "yellow",
@@ -13,9 +21,6 @@ const NextPiece = ({ type }) => {
     L: "orange",
     0: "",
   };
-  if (!type) {
-    return <div className="next-piece-container">No next piece</div>;
-  }
   const pieceMatrix = TETROMINOS[type];
   return (
     <div className="next-piece-container">
