@@ -9,3 +9,17 @@
   background: #111;
   border: 2px solid #444;
 }
+
+@media screen and (max-width: 768px) {
+  .empty-board {
+    width: 260px;
+    height: 520px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .empty-board {
+    width: 240px;
+    height: 480px;
+  }
+}

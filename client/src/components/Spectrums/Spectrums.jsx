@@ -1,3 +1,5 @@
+import './Spectrums.css';
+
 function Spectrums() {
   return (
     <div className="spectrums-container">
