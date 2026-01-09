@@ -18,10 +18,11 @@ io.on("connection", (socket) => {
     socket.join(room);
     console.log(`${playerName} joined ${room}`);
 
-    // io.to(room).emit("player-joined", {
-    //   id: socket.id,
-    //   playerName,
-    // });
+  });
+  socket.on("player-input", ({ action }) => {
+    console.log(`Received action from ${socket.id}: ${action}`);
+    // Here you would handle the game logic based on player input
+    
   });
 
   socket.on("disconnect", () => {

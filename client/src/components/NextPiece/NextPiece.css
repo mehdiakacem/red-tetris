@@ -42,5 +42,12 @@
     width: 90px;
     height: 90px;
   }
+
+  @media screen and (max-width: 480px) {
+  .next-piece-container {
+    order: 3;
+  }
+}
+
   
 }

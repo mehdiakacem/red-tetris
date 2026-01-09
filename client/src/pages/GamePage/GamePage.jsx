@@ -18,9 +18,43 @@ function GamePage() {
       });
     });
 
+    const emitInput = (action) => {
+      socket.emit("player-input", {
+        action,
+        timestamp: Date.now(),
+      });
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.repeat) return; // prevent key hold spam  
+
+      switch (e.code) {
+        case "ArrowLeft":
+          emitInput("MOVE_LEFT");
+          break;
+        case "ArrowRight":
+          emitInput("MOVE_RIGHT");
+          break;
+        case "ArrowUp":
+          emitInput("ROTATE");
+          break;
+        case "ArrowDown":
+          emitInput("SOFT_DROP");
+          break;
+        case "Space":
+          emitInput("HARD_DROP");
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       socket.off("connect");
       socket.disconnect();
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [room, playerName]);
   return (
