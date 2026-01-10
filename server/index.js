@@ -30,6 +30,8 @@ io.on("connection", (socket) => {
   socket.on("start-game", ({ room }) => {
     console.log(`Starting game in room: ${room}`);
     io.to(room).emit("game-started");
+    io.to(room).emit("next-piece", { nextPieceType: "I" });
+    io.to(room).emit("current-piece", { piece: { type: "T" } });
   });
 
   socket.on("disconnect", () => {
