@@ -10,6 +10,8 @@ import StartButton from "../../components/StartButton/StartButton.jsx";
 function GamePage() {
   let { room, playerName } = useParams();
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [currentPiece, setCurrentPiece] = useState(null);
+  const [nextPieceType, setNextPieceType] = useState(null);
 
   useEffect(() => {
     socket.connect();
@@ -65,9 +67,22 @@ function GamePage() {
       setIsGameStarted(true);
     });
 
+    socket.on("next-piece", ({ nextPieceType }) => {
+      console.log("Received piece data:", nextPieceType);
+      setNextPieceType(nextPieceType);
+      // Handle incoming piece data
+    });
+
+    socket.on("current-piece", ({ piece }) => {
+      console.log("Received current piece data:", piece);
+      setCurrentPiece(piece);
+    });
+
     return () => {
       socket.off("connect");
       socket.off("game-started");
+      socket.off("next-piece");
+      socket.off("current-piece");
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -81,13 +96,13 @@ function GamePage() {
     <>
       <Spectrums />
       {isGameStarted ? (
-        <Board />
+        <Board currentPiece={currentPiece} />
       ) : (
         <EmptyBoard>
           <StartButton onClick={handleStartClick} />
         </EmptyBoard>
       )}
-      <NextPiece />
+      <NextPiece type={nextPieceType} />
     </>
   );
 }
