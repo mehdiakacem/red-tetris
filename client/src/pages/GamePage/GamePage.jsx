@@ -83,13 +83,14 @@ function GamePage() {
       socket.off("game-started");
       socket.off("next-piece");
       socket.off("current-piece");
+      socket.off("player-joined");
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [room, playerName]);
 
   const handleStartClick = () => {
-    socket.emit("start-game", { room: room });
+    socket.emit("start-game", { room });
   };
 
   return (
