@@ -1,0 +1,136 @@
+import Piece from "./Piece";
+
+const PIECE_TYPES = ["I", "O", "T", "S", "Z", "J", "L"];
+
+export default class Game {
+  constructor(room) {
+    this.room = room;
+
+    this.players = new Map();
+    this.hostId = null;
+
+    this.started = false;
+    this.ended = false;
+
+    this.bag = [];
+    this.bagIndex = 0;
+  }
+
+  addPlayer(player) {
+    if (this.started) return;
+
+    if (this.players.size === 0) {
+      this.hostId = player.id;
+    }
+
+    this.players.set(player.id, player);
+  }
+
+  removePlayer(socketId) {
+    this.players.delete(socketId);
+
+    if (this.hostId === socketId) {
+      const nextHost = this.players.values().next().value;
+      this.hostId = nextHost ? nextHost.id : null;
+    }
+  }
+
+  isEmpty() {
+    return this.players.size === 0;
+  }
+
+  startGame(requesterId) {
+    if (requesterId !== this.hostId) return false;
+    if (this.started) return false;
+
+    this.started = true;
+    this.ended = false;
+
+    this.resetPlayers();
+    this.resetBag();
+
+    return true;
+  }
+
+  endedGame() {
+    this.started = false;
+    this.ended = true;
+  }
+
+  resetPlayers() {
+    this.players.forEach((player) => {
+      player.alive = true;
+      player.board = player.createEmptyBoard();
+      player.pendingPenaltyLines = 0;
+    });
+  }
+
+  resetBag() {
+    this.bag = shuffle([...PIECE_TYPES]);
+    this.bagIndex = 0;
+  }
+
+  getNextPiece() {
+    if (this.bagIndex >= this.bag.length) {
+      this.bag = shuffle([...PIECE_TYPES]);
+      this.bagIndex = 0;
+    }
+
+    return this.bag[this.bagIndex++];
+  }
+
+  spawnPieceForAll() {
+    const type = this.getNextPiece();
+
+    return {
+      type,
+      rotation: 0,
+      position: { x: 3, y: 0 },
+    };
+  }
+
+  handleLineClear(clearingPlayerId, linesCleared) {
+    if (linesCleared <= 0) return;
+
+    const penalty = linesCleared - 1;
+
+    if (penalty <= 0) return;
+
+    this.players.forEach((player, id) => {
+      if (id !== clearingPlayerId && player.alive) {
+        player.addPenaltyLines(penalty);
+      }
+    });
+  }
+
+  killPlayer(playerId) {
+    const player = this.players.get(playerId);
+    if (!player) return;
+
+    player.kill();
+
+    const alivePlayers = [...this.players.values()].filter((p) => p.alive);
+
+    if (alivePlayers.length <= 1) {
+      this.endedGame();
+    }
+  }
+
+  getPublicState() {
+    return {
+      room: this.room,
+      sarted: this.started,
+      ended: this.ended,
+      hostId: this.hostId,
+      players: [...this.players.values()].map((p) => p.toPublicData()),
+    };
+  }
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
