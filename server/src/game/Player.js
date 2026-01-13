@@ -1,11 +1,25 @@
+import Piece from './Piece.js';
+
 export default class Player {
   constructor(socketId, name) {
     this.id = socketId;
     this.name = name;
+
     this.alive = true;
     this.board = this.createEmptyBoard();
+
     this.pendingPenaltyLines = 0;
     this.spectrum = Array(10).fill(0);
+
+    this.currentPiece = null;
+  }
+
+  spawnPiece(type) {
+    this.currentPiece = new Piece(type);
+  }
+
+  clearPiece() {
+    this.currentPiece = null;
   }
 
   createEmptyBoard() {
