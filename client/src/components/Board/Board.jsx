@@ -39,8 +39,8 @@ function Cell({ color }) {
 function isActiveCell(x, y, piece) {
   if (!piece) return false;
 
-  const localX = x - piece.x;
-  const localY = y - piece.y;
+  const localX = x - piece.position.x;
+  const localY = y - piece.position.y;
 
   return Boolean(piece.matrix[localY]?.[localX]);
 }

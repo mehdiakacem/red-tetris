@@ -48,6 +48,7 @@ export default class Game {
 
     this.resetPlayers();
     this.resetBag();
+    this.spawnPieceForAll();
 
     return true;
   }
@@ -80,8 +81,13 @@ export default class Game {
   }
 
   spawnPieceForAll() {
-    const type = this.getNextPiece();
 
+    const type = this.getNextPiece();
+    this.players.forEach((player) => {
+      if (player.alive) {
+        player.spawnPiece(type);
+      }
+    });
     return {
       type,
       rotation: 0,
