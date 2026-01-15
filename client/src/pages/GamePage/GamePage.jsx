@@ -40,6 +40,10 @@ function GamePage() {
       setHostId(hostId);
     });
 
+    socket.on("game-started", ({ game }) => {
+      setIsGameStarted(game.started);
+    });
+
     const emitInput = (action) => {
       socket.emit("player-input", {
         action,
@@ -73,11 +77,6 @@ function GamePage() {
 
     window.addEventListener("keydown", handleKeyDown);
 
-    socket.on("game-started", () => {
-      console.log("Game started!");
-      // Here you would typically set some state to indicate the game has started
-      setIsGameStarted(true);
-    });
 
     socket.on("current-piece", ({ piece }) => {
       console.log("Received current piece data:", piece);
@@ -87,6 +86,7 @@ function GamePage() {
     return () => {
       socket.off("connect");
       socket.off("player-joined");
+      socket.off("player-left");
       socket.off("game-started");
       socket.off("next-piece");
       socket.off("current-piece");
@@ -97,7 +97,7 @@ function GamePage() {
 
   
   const handleStartClick = () => {
-    socket.emit("start-game", { room });
+    socket.emit("start-game");
   };
 
   return (
