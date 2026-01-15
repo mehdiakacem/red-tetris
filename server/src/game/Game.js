@@ -1,4 +1,4 @@
-import Piece from "./Piece";
+import Piece from "./Piece.js";
 
 const PIECE_TYPES = ["I", "O", "T", "S", "Z", "J", "L"];
 
