@@ -6,26 +6,38 @@ import { socket } from "../../socket.js";
 import { useParams } from "react-router";
 import EmptyBoard from "../../components/EmptyBoard/EmptyBoard.jsx";
 import StartButton from "../../components/StartButton/StartButton.jsx";
+import WaitingForHost from "../../components/WaitingForHost/WaintingForHost.jsx";
 
 function GamePage() {
   let { room, playerName } = useParams();
+  const [players, setPlayers] = useState([]);
+  const [hostId, setHostId] = useState(null);
+
+  const isHost = socket.id === hostId;
+
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [currentPiece, setCurrentPiece] = useState(null);
-  const [nextPieceType, setNextPieceType] = useState(null);
 
   useEffect(() => {
     socket.connect();
 
     socket.on("connect", () => {
-      console.log("Connected to server:", socket.id);
       socket.emit("join-room", {
         room: room,
         playerName: playerName,
       });
     });
 
-    socket.on("player-joined", ({ playerName }) => {
-      console.log(`${playerName} has joined the room.`);
+    socket.on("player-joined", ({ players, hostId }) => {
+      setPlayers(players);
+      setHostId(hostId);
+    });
+
+    socket.on("player-left", ({ id, hostId }) => {
+      setPlayers((prevPlayers) =>
+        prevPlayers.filter((player) => player.id !== id)
+      );
+      setHostId(hostId);
     });
 
     const emitInput = (action) => {
@@ -67,12 +79,6 @@ function GamePage() {
       setIsGameStarted(true);
     });
 
-    socket.on("next-piece", ({ nextPieceType }) => {
-      console.log("Received piece data:", nextPieceType);
-      setNextPieceType(nextPieceType);
-      // Handle incoming piece data
-    });
-
     socket.on("current-piece", ({ piece }) => {
       console.log("Received current piece data:", piece);
       setCurrentPiece(piece);
@@ -80,30 +86,43 @@ function GamePage() {
 
     return () => {
       socket.off("connect");
+      socket.off("player-joined");
       socket.off("game-started");
       socket.off("next-piece");
       socket.off("current-piece");
-      socket.off("player-joined");
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [room, playerName]);
 
+  
   const handleStartClick = () => {
     socket.emit("start-game", { room });
   };
 
   return (
     <>
-      <Spectrums />
+      <ul>
+        {players.map((player) => (
+          <li key={player.id}>
+            {player.name}
+            {player.id === hostId && " (Host)"}
+          </li>
+        ))}
+      </ul>
       {isGameStarted ? (
         <Board currentPiece={currentPiece} />
       ) : (
         <EmptyBoard>
-          <StartButton onClick={handleStartClick} />
+          {isHost ? (
+            <StartButton onClick={handleStartClick} />
+          ) : (
+            <WaitingForHost />
+          )}
         </EmptyBoard>
       )}
-      <NextPiece type={nextPieceType} />
+      <Spectrums />
+      {/* <NextPiece type={nextPieceType} /> */}
     </>
   );
 }

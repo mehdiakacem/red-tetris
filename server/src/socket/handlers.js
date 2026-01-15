@@ -1,10 +1,27 @@
+import GameManager from "../game/GameManager.js";
+import Player from "../game/Player.js";
+
+const gameManager = new GameManager();
+
 export function registerSocketHandlers(io) {
   io.on("connection", (socket) => {
-    console.log("Client connected:", socket.id);
-
     socket.on("join-room", ({ room, playerName }) => {
       socket.join(room);
-      console.log(`${playerName} joined ${room}`);
+
+      const game = gameManager.getOrCreateGame(room);
+      const player = new Player(socket.id, playerName);
+
+      game.addPlayer(player);
+
+      const players = game
+        .getPublicState()
+        .players.map((p) => ({ id: p.id, name: p.name }));
+      console.log(players);
+
+      io.to(room).emit("player-joined", {
+        players,
+        hostId: game.hostId,
+      });
     });
 
     socket.on("player-input", ({ action }) => {
@@ -20,7 +37,20 @@ export function registerSocketHandlers(io) {
     });
 
     socket.on("disconnect", () => {
-      console.log("Client disconnected:", socket.id);
+      for (const game of gameManager.getAllGames()) {
+        if (game.players.has(socket.id)) {
+          game.removePlayer(socket.id);
+
+          io.to(game.room).emit("player-left", {
+            id: socket.id,
+            hostId: game.hostId,
+          });
+
+          if (game.isEmpty()) {
+            gameManager.removeGame(game.room);
+          }
+        }
+      }
     });
   });
 }
