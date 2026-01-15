@@ -5,8 +5,11 @@ const gameManager = new GameManager();
 
 export function registerSocketHandlers(io) {
   io.on("connection", (socket) => {
+    let currentRoom = null;
+
     socket.on("join-room", ({ room, playerName }) => {
       socket.join(room);
+      currentRoom = room;
 
       const game = gameManager.getOrCreateGame(room);
       const player = new Player(socket.id, playerName);
@@ -16,7 +19,6 @@ export function registerSocketHandlers(io) {
       const players = game
         .getPublicState()
         .players.map((p) => ({ id: p.id, name: p.name }));
-      console.log(players);
 
       io.to(room).emit("player-joined", {
         players,
@@ -24,16 +26,19 @@ export function registerSocketHandlers(io) {
       });
     });
 
+    socket.on("start-game", () => {
+      const game = gameManager.getGame(currentRoom);
+      if (!game) return;
+      
+      const started = game.startGame(socket.id);
+      if (!started) return;
+
+      io.to(currentRoom).emit("game-started", { game: game.getPublicState() });
+    });
+
     socket.on("player-input", ({ action }) => {
       console.log(`Received action from ${socket.id}: ${action}`);
       // Here you would handle the game logic based on player input
-    });
-
-    socket.on("start-game", ({ room }) => {
-      console.log(`Starting game in room: ${room}`);
-      io.to(room).emit("game-started");
-      io.to(room).emit("next-piece", { nextPieceType: "I" });
-      io.to(room).emit("current-piece", { piece: { type: "T" } });
     });
 
     socket.on("disconnect", () => {

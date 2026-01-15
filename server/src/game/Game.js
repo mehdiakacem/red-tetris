@@ -119,7 +119,7 @@ export default class Game {
   getPublicState() {
     return {
       room: this.room,
-      sarted: this.started,
+      started: this.started,
       ended: this.ended,
       hostId: this.hostId,
       players: [...this.players.values()].map((p) => p.toPublicData()),
