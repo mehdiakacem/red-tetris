@@ -19,7 +19,6 @@ function GamePage() {
   const [board, setBoard] = useState(null);
   const [currentPiece, setCurrentPiece] = useState(null);
 
-
   useEffect(() => {
     socket.connect();
 
@@ -47,7 +46,13 @@ function GamePage() {
       const player = game.players.find((p) => p.id === socket.id);
       setBoard(player.board);
       setCurrentPiece(player.currentPiece);
+    });
 
+    socket.on("game-tick", ({ game }) => {
+      const player = game.players.find((p) => p.id === socket.id);
+      setBoard(player.board);
+      console.log(player.currentPiece.type)
+      setCurrentPiece(player.currentPiece);
     });
 
     const emitInput = (action) => {
@@ -88,7 +93,7 @@ function GamePage() {
       socket.off("player-joined");
       socket.off("player-left");
       socket.off("game-started");
-      socket.off("next-piece");
+      socket.off("game-tick");
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };

@@ -1,9 +1,6 @@
-import GameManager from "../game/GameManager.js";
 import Player from "../game/Player.js";
 
-const gameManager = new GameManager();
-
-export function registerSocketHandlers(io) {
+export function registerSocketHandlers(io, gameManager) {
   io.on("connection", (socket) => {
     let currentRoom = null;
 

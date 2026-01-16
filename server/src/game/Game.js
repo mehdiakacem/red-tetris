@@ -1,4 +1,6 @@
 import Piece from "./Piece.js";
+import isValidPosition from "./logic/isValidPosition.js";
+import lockPiece from "./logic/lockPiece.js";
 
 const PIECE_TYPES = ["I", "O", "T", "S", "Z", "J", "L"];
 
@@ -14,6 +16,32 @@ export default class Game {
 
     this.bag = [];
     this.bagIndex = 0;
+  }
+
+  tick() {
+    if (!this.started || this.ended) return;
+
+    this.players.forEach((player) => {
+      if (!player.alive || !player.currentPiece) return;
+
+      const test = player.currentPiece.clone();
+      test.move(0, 1);
+
+      if (isValidPosition(test.matrix, player.board, test.position.x, test.position.y)) {
+        player.currentPiece.move(0, 1);
+      } else {
+        this.lockCurrentPiece(player);
+      }
+    });
+  }
+
+  lockCurrentPiece(player) {
+    player.board = lockPiece(player.board, player.currentPiece)
+    
+    // clear lines
+
+    player.clearPiece();
+    this.spawnPieceForAll()
   }
 
   addPlayer(player) {
