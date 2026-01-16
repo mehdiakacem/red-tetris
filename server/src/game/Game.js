@@ -18,6 +18,45 @@ export default class Game {
     this.bagIndex = 0;
   }
 
+  handleInput(playerId, action) {
+    const player = this.players.get(playerId);
+    if (!player || !player.alive) return;
+
+    const piece = player.currentPiece;
+    if (!piece) return;
+
+    const test = piece.clone();
+
+    switch (action) {
+      case "left":
+        test.move(-1, 0);
+        break;
+      case "right":
+        test.move(1, 0);
+        break;
+      case "rotate":
+        test.rotate(1);
+        break;
+      case "down":
+        test.move(0, 1);
+        break;
+      // case hardDrob
+    }
+
+    if (
+      isValidPosition(
+        test.matrix,
+        player.board,
+        test.position.x,
+        test.position.y
+      )
+    ) {
+      piece.position = test.position;
+      piece.rotation = test.rotation;
+      piece.matrix = test.matrix;
+    }
+  }
+
   tick() {
     if (!this.started || this.ended) return;
 
@@ -27,7 +66,14 @@ export default class Game {
       const test = player.currentPiece.clone();
       test.move(0, 1);
 
-      if (isValidPosition(test.matrix, player.board, test.position.x, test.position.y)) {
+      if (
+        isValidPosition(
+          test.matrix,
+          player.board,
+          test.position.x,
+          test.position.y
+        )
+      ) {
         player.currentPiece.move(0, 1);
       } else {
         this.lockCurrentPiece(player);
@@ -36,12 +82,12 @@ export default class Game {
   }
 
   lockCurrentPiece(player) {
-    player.board = lockPiece(player.board, player.currentPiece)
-    
+    player.board = lockPiece(player.board, player.currentPiece);
+
     // clear lines
 
     player.clearPiece();
-    this.spawnPieceForAll()
+    this.spawnPieceForAll();
   }
 
   addPlayer(player) {
@@ -109,7 +155,6 @@ export default class Game {
   }
 
   spawnPieceForAll() {
-
     const type = this.getNextPiece();
     this.players.forEach((player) => {
       if (player.alive) {

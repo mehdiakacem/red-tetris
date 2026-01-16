@@ -36,6 +36,9 @@ export function registerSocketHandlers(io, gameManager) {
     socket.on("player-input", ({ action }) => {
       console.log(`Received action from ${socket.id}: ${action}`);
       // Here you would handle the game logic based on player input
+      const game = gameManager.getGame(currentRoom);
+      game.handleInput(socket.id, action);
+      socket.emit("game-tick", {game: game.getPublicState()})
     });
 
     socket.on("disconnect", () => {

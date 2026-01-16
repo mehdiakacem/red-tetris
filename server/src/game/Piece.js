@@ -1,3 +1,5 @@
+import rotateMatrix from "./logic/rotateMatrix.js";
+
 export default class Piece {
   constructor(type) {
     this.type = type;
@@ -8,6 +10,7 @@ export default class Piece {
 
   rotate(direction = 1) {
     this.rotation = (this.rotation + direction + 4) % 4;
+    this.matrix = rotateMatrix(this.matrix);
   }
 
   setRotation(rotation) {
@@ -57,40 +60,33 @@ const TETROMINOS = {
     [0,0,0,0],
   ],
   O: [
-    [0,1,1,0],
-    [0,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0],
+    [1,1],
+    [1,1],
   ],
   T: [
-    [0,1,0,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0],
+    [0,1,0],
+    [1,1,1],
+    [0,0,0],
   ],
   S: [
-    [0,1,1,0],
-    [1,1,0,0],
-    [0,0,0,0],
-    [0,0,0,0],
+    [0,1,1],
+    [1,1,0],
+    [0,0,0],
   ],
   Z: [
-    [1,1,0,0],
-    [0,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0],
+    [1,1,0],
+    [0,1,1],
+    [0,0,0],
   ],
   J: [
-    [1,0,0,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0],
+    [1,0,0],
+    [1,1,1],
+    [0,0,0],
   ],
   L: [
-    [0,0,1,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0],
+    [0,0,1],
+    [1,1,1],
+    [0,0,0],
   ],
 };
 

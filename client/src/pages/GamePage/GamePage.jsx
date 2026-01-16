@@ -51,7 +51,6 @@ function GamePage() {
     socket.on("game-tick", ({ game }) => {
       const player = game.players.find((p) => p.id === socket.id);
       setBoard(player.board);
-      console.log(player.currentPiece.type)
       setCurrentPiece(player.currentPiece);
     });
 
@@ -67,19 +66,19 @@ function GamePage() {
 
       switch (e.code) {
         case "ArrowLeft":
-          emitInput("MOVE_LEFT");
+          emitInput("left");
           break;
         case "ArrowRight":
-          emitInput("MOVE_RIGHT");
+          emitInput("right");
           break;
         case "ArrowUp":
-          emitInput("ROTATE");
+          emitInput("rotate");
           break;
         case "ArrowDown":
-          emitInput("SOFT_DROP");
+          emitInput("down");
           break;
         case "Space":
-          emitInput("HARD_DROP");
+          emitInput("hardDrop");
           break;
         default:
           break;
