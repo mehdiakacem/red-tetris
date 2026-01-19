@@ -7,15 +7,17 @@ export default class Player {
     this.alive = true;
 
     this.board = this.createEmptyBoard();
-    this.queue = [];
     this.currentPiece = null;
+    this.queue = [];
 
     this.pendingPenaltyLines = 0;
     this.spectrum = Array(10).fill(0);
   }
 
   spawnPiece(type) {
-    this.currentPiece = new Piece(type);
+    this.queue.push(type)
+    if (!this.currentPiece)
+      this.currentPiece = new Piece(this.queue.shift());
   }
 
   clearPiece() {
