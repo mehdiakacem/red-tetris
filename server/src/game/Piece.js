@@ -5,7 +5,7 @@ export default class Piece {
     this.type = type;
     this.rotation = 0;
     this.matrix = TETROMINOS[type];
-    this.position = { x: 3, y: 0 };
+    this.position = { x: Math.floor((10 - this.matrix[0].length) / 2), y: 0 };
   }
 
   rotate(direction = 1) {
@@ -38,7 +38,7 @@ export default class Piece {
     const copy = new Piece(this.type);
     copy.rotation = this.rotation;
     copy.position = { ...this.position };
-    copy.matrix = this.matrix.map(row => [...row]);
+    copy.matrix = this.matrix.map((row) => [...row]);
     return copy;
   }
 
@@ -54,39 +54,38 @@ export default class Piece {
 
 const TETROMINOS = {
   I: [
-    [0,0,0,0],
-    [1,1,1,1],
-    [0,0,0,0],
-    [0,0,0,0],
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
   ],
   O: [
-    [1,1],
-    [1,1],
+    [1, 1],
+    [1, 1],
   ],
   T: [
-    [0,1,0],
-    [1,1,1],
-    [0,0,0],
+    [0, 1, 0],
+    [1, 1, 1],
+    [0, 0, 0],
   ],
   S: [
-    [0,1,1],
-    [1,1,0],
-    [0,0,0],
+    [0, 1, 1],
+    [1, 1, 0],
+    [0, 0, 0],
   ],
   Z: [
-    [1,1,0],
-    [0,1,1],
-    [0,0,0],
+    [1, 1, 0],
+    [0, 1, 1],
+    [0, 0, 0],
   ],
   J: [
-    [1,0,0],
-    [1,1,1],
-    [0,0,0],
+    [1, 0, 0],
+    [1, 1, 1],
+    [0, 0, 0],
   ],
   L: [
-    [0,0,1],
-    [1,1,1],
-    [0,0,0],
+    [0, 0, 1],
+    [1, 1, 1],
+    [0, 0, 0],
   ],
 };
-
