@@ -1,12 +1,16 @@
+import rotateMatrix from "./logic/rotateMatrix.js";
+
 export default class Piece {
   constructor(type) {
     this.type = type;
     this.rotation = 0;
-    this.position = { x: 3, y: 0 };
+    this.matrix = TETROMINOS[type];
+    this.position = { x: Math.floor((10 - this.matrix[0].length) / 2), y: 0 };
   }
 
   rotate(direction = 1) {
     this.rotation = (this.rotation + direction + 4) % 4;
+    this.matrix = rotateMatrix(this.matrix);
   }
 
   setRotation(rotation) {
@@ -22,18 +26,19 @@ export default class Piece {
     this.position = { x, y };
   }
 
-  getBlocks() {
-    const shape = SHAPES[this.type][this.rotation];
-    return shape.map(([x, y]) => ({
-      x: this.position.x + x,
-      y: this.position.y + y,
-    }));
-  }
+  // getBlocks() {
+  //   const shape = SHAPES[this.type][this.rotation];
+  //   return shape.map(([x, y]) => ({
+  //     x: this.position.x + x,
+  //     y: this.position.y + y,
+  //   }));
+  // }
 
   clone() {
     const copy = new Piece(this.type);
     copy.rotation = this.rotation;
     copy.position = { ...this.position };
+    copy.matrix = this.matrix.map((row) => [...row]);
     return copy;
   }
 
@@ -42,52 +47,45 @@ export default class Piece {
       type: this.type,
       rotation: this.rotation,
       position: this.position,
+      matrix: this.matrix,
     };
   }
 }
 
-const SHAPES = {
+const TETROMINOS = {
   I: [
-    [[0,1],[1,1],[2,1],[3,1]],
-    [[2,0],[2,1],[2,2],[2,3]],
-    [[0,2],[1,2],[2,2],[3,2]],
-    [[1,0],[1,1],[1,2],[1,3]],
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
   ],
   O: [
-    [[1,0],[2,0],[1,1],[2,1]],
-    [[1,0],[2,0],[1,1],[2,1]],
-    [[1,0],[2,0],[1,1],[2,1]],
-    [[1,0],[2,0],[1,1],[2,1]],
+    [1, 1],
+    [1, 1],
   ],
   T: [
-    [[1,0],[0,1],[1,1],[2,1]],
-    [[1,0],[1,1],[2,1],[1,2]],
-    [[0,1],[1,1],[2,1],[1,2]],
-    [[1,0],[0,1],[1,1],[1,2]],
+    [0, 1, 0],
+    [1, 1, 1],
+    [0, 0, 0],
   ],
   S: [
-    [[1,0],[2,0],[0,1],[1,1]],
-    [[1,0],[1,1],[2,1],[2,2]],
-    [[1,1],[2,1],[0,2],[1,2]],
-    [[0,0],[0,1],[1,1],[1,2]],
+    [0, 1, 1],
+    [1, 1, 0],
+    [0, 0, 0],
   ],
   Z: [
-    [[0,0],[1,0],[1,1],[2,1]],
-    [[2,0],[1,1],[2,1],[1,2]],
-    [[0,1],[1,1],[1,2],[2,2]],
-    [[1,0],[0,1],[1,1],[0,2]],
+    [1, 1, 0],
+    [0, 1, 1],
+    [0, 0, 0],
   ],
   J: [
-    [[0,0],[0,1],[1,1],[2,1]],
-    [[1,0],[2,0],[1,1],[1,2]],
-    [[0,1],[1,1],[2,1],[2,2]],
-    [[1,0],[1,1],[0,2],[1,2]],
+    [1, 0, 0],
+    [1, 1, 1],
+    [0, 0, 0],
   ],
   L: [
-    [[2,0],[0,1],[1,1],[2,1]],
-    [[1,0],[1,1],[1,2],[2,2]],
-    [[0,1],[1,1],[2,1],[0,2]],
-    [[0,0],[1,0],[1,1],[1,2]],
+    [0, 0, 1],
+    [1, 1, 1],
+    [0, 0, 0],
   ],
 };
-

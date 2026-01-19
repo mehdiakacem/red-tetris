@@ -4,14 +4,14 @@ export default class Player {
   constructor(socketId, name) {
     this.id = socketId;
     this.name = name;
-
     this.alive = true;
+
     this.board = this.createEmptyBoard();
+    this.queue = [];
+    this.currentPiece = null;
 
     this.pendingPenaltyLines = 0;
     this.spectrum = Array(10).fill(0);
-
-    this.currentPiece = null;
   }
 
   spawnPiece(type) {
@@ -72,6 +72,7 @@ export default class Player {
       name: this.name,
       alive: this.alive,
       board: this.board,
+      currentPiece: this.currentPiece?.toData(),
       spectrum: this.spectrum,
     };
   }

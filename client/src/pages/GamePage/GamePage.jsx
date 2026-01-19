@@ -14,8 +14,9 @@ function GamePage() {
   const [hostId, setHostId] = useState(null);
 
   const isHost = socket.id === hostId;
-
   const [isGameStarted, setIsGameStarted] = useState(false);
+
+  const [board, setBoard] = useState(null);
   const [currentPiece, setCurrentPiece] = useState(null);
 
   useEffect(() => {
@@ -42,6 +43,15 @@ function GamePage() {
 
     socket.on("game-started", ({ game }) => {
       setIsGameStarted(game.started);
+      const player = game.players.find((p) => p.id === socket.id);
+      setBoard(player.board);
+      setCurrentPiece(player.currentPiece);
+    });
+
+    socket.on("game-tick", ({ game }) => {
+      const player = game.players.find((p) => p.id === socket.id);
+      setBoard(player.board);
+      setCurrentPiece(player.currentPiece);
     });
 
     const emitInput = (action) => {
@@ -56,19 +66,19 @@ function GamePage() {
 
       switch (e.code) {
         case "ArrowLeft":
-          emitInput("MOVE_LEFT");
+          emitInput("left");
           break;
         case "ArrowRight":
-          emitInput("MOVE_RIGHT");
+          emitInput("right");
           break;
         case "ArrowUp":
-          emitInput("ROTATE");
+          emitInput("rotate");
           break;
         case "ArrowDown":
-          emitInput("SOFT_DROP");
+          emitInput("down");
           break;
         case "Space":
-          emitInput("HARD_DROP");
+          emitInput("hardDrop");
           break;
         default:
           break;
@@ -77,25 +87,17 @@ function GamePage() {
 
     window.addEventListener("keydown", handleKeyDown);
 
-
-    socket.on("current-piece", ({ piece }) => {
-      console.log("Received current piece data:", piece);
-      setCurrentPiece(piece);
-    });
-
     return () => {
       socket.off("connect");
       socket.off("player-joined");
       socket.off("player-left");
       socket.off("game-started");
-      socket.off("next-piece");
-      socket.off("current-piece");
+      socket.off("game-tick");
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [room, playerName]);
 
-  
   const handleStartClick = () => {
     socket.emit("start-game");
   };
@@ -111,7 +113,7 @@ function GamePage() {
         ))}
       </ul>
       {isGameStarted ? (
-        <Board currentPiece={currentPiece} />
+        <Board board={board} activePiece={currentPiece} />
       ) : (
         <EmptyBoard>
           {isHost ? (
