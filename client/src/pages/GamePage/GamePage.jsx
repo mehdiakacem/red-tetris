@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Board from "../../components/Board/Board.jsx";
 import NextPiece from "../../components/NextPiece/NextPiece.jsx";
-import Spectrums from "../../components/Spectrums/Spectrums.jsx";
+import Opponents from "../../components/Opponents/Opponents.jsx";
 import { socket } from "../../socket.js";
 import { useParams } from "react-router";
 import EmptyBoard from "../../components/EmptyBoard/EmptyBoard.jsx";
@@ -10,7 +10,7 @@ import WaitingForHost from "../../components/WaitingForHost/WaintingForHost.jsx"
 
 function GamePage() {
   let { room, playerName } = useParams();
-  const [players, setPlayers] = useState([]);
+  const [opponents, setOpponents] = useState([]);
   const [hostId, setHostId] = useState(null);
 
   const isHost = socket.id === hostId;
@@ -30,12 +30,12 @@ function GamePage() {
     });
 
     socket.on("player-joined", ({ players, hostId }) => {
-      setPlayers(players);
+      setOpponents(players.filter((player) => player.id !== socket.id));
       setHostId(hostId);
     });
 
     socket.on("player-left", ({ id, hostId }) => {
-      setPlayers((prevPlayers) =>
+      setOpponents((prevPlayers) =>
         prevPlayers.filter((player) => player.id !== id)
       );
       setHostId(hostId);
@@ -50,8 +50,11 @@ function GamePage() {
 
     socket.on("game-tick", ({ game }) => {
       const player = game.players.find((p) => p.id === socket.id);
-      setBoard(player.board);
-      setCurrentPiece(player.currentPiece);
+      if (player) {
+        setBoard(player.board);
+        setCurrentPiece(player.currentPiece);
+        setOpponents(game.players.filter((player) => player.id !== socket.id));
+      }
     });
 
     const emitInput = (action) => {
@@ -104,26 +107,22 @@ function GamePage() {
 
   return (
     <>
-      <ul>
-        {players.map((player) => (
-          <li key={player.id}>
-            {player.name}
-            {player.id === hostId && " (Host)"}
-          </li>
-        ))}
-      </ul>
-      {isGameStarted ? (
-        <Board board={board} activePiece={currentPiece} />
-      ) : (
-        <EmptyBoard>
-          {isHost ? (
-            <StartButton onClick={handleStartClick} />
-          ) : (
-            <WaitingForHost />
-          )}
-        </EmptyBoard>
-      )}
-      <Spectrums />
+      <div>
+        <span>{playerName}</span>
+        {isHost && " (Host)"}
+        {isGameStarted ? (
+          <Board board={board} activePiece={currentPiece} />
+        ) : (
+          <EmptyBoard>
+            {isHost ? (
+              <StartButton onClick={handleStartClick} />
+            ) : (
+              <WaitingForHost />
+            )}
+          </EmptyBoard>
+        )}
+      </div>
+      <Opponents opponents={opponents} hostId={hostId} />
       {/* <NextPiece type={nextPieceType} /> */}
     </>
   );

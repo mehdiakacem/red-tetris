@@ -1,0 +1,33 @@
+@media screen and (max-width: 480px) {
+  .opponents {
+    order: 2;
+  }
+}
+
+.opponents {
+  width: 120px;
+  height: 600px;
+  overflow: scroll;
+  margin-top: 23px;
+}
+
+.spectrum {
+  display: flex;
+  gap: 1px;
+  height: 120px;
+  width: 100px;
+  background: #444;
+  border: 1px solid black;
+}
+
+.spectrum-col {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+
+.spectrum-fill {
+  width: 100%;
+  background: red;
+  transition: height 0.1s linear;
+}
