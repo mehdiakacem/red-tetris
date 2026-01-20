@@ -1,5 +1,4 @@
 import NextPiece from "../../components/NextPiece/NextPiece.jsx";
-import Spectrums from "../../components/Spectrums/Spectrums.jsx";
 import EmptyBoard from "../../components/EmptyBoard/EmptyBoard.jsx";
 import JoinGameForm from "../../components/JoinGameForm/JoinGameForm.jsx";
 

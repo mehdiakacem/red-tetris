@@ -82,7 +82,8 @@ export default class Game {
   }
 
   lockCurrentPiece(player) {
-    player.board = lockPiece(player.board, player.currentPiece);
+    const newBoard = lockPiece(player.board, player.currentPiece);
+    player.setBoard(newBoard);
 
     // clear lines
 
