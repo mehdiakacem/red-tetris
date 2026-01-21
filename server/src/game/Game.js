@@ -1,4 +1,6 @@
 import Piece from "./Piece.js";
+import { addGarbageLines } from "./logic/addGarbageLines.js";
+import clearLines from "./logic/clearLines.js";
 import isValidPosition from "./logic/isValidPosition.js";
 import lockPiece from "./logic/lockPiece.js";
 
@@ -40,7 +42,20 @@ export default class Game {
       case "down":
         test.move(0, 1);
         break;
-      // case hardDrob
+      case "hardDrop":
+        while (
+          isValidPosition(
+            test.matrix,
+            player.board,
+            test.position.x,
+            test.position.y + 1
+          )
+        ) {
+          piece.move(0, 1);
+          test.move(0, 1);
+        }
+        this.lockCurrentPiece(player);
+        return;
     }
 
     if (
@@ -81,11 +96,38 @@ export default class Game {
     });
   }
 
+  handleLineClear(clearingPlayerId, linesCleared) {
+    if (linesCleared <= 0) return;
+
+    const penalty = linesCleared - 1;
+
+    if (penalty <= 0) return;
+
+    this.players.forEach((player, id) => {
+      if (id !== clearingPlayerId && player.alive) {
+        player.addPenaltyLines(penalty);
+      }
+    });
+  }
+
   lockCurrentPiece(player) {
-    const newBoard = lockPiece(player.board, player.currentPiece);
-    player.setBoard(newBoard);
+    let newBoard = lockPiece(player.board, player.currentPiece);
 
     // clear lines
+    const result = clearLines(newBoard);
+    player.setBoard(result.board);
+    if (result.linesCleared > 0) {
+      // handle line clear
+      this.handleLineClear(player.id, result.linesCleared);
+    }
+    
+    // apply penalties
+    const penalties = player.consumePenaltyLines();
+    if (penalties > 0) {
+      newBoard = addGarbageLines(player.board, penalties)
+      player.setBoard(newBoard)
+    }
+
 
     player.clearPiece();
     this.spawnPieceForAll();

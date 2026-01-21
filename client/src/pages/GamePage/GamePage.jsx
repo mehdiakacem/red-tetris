@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 import EmptyBoard from "../../components/EmptyBoard/EmptyBoard.jsx";
 import StartButton from "../../components/StartButton/StartButton.jsx";
 import WaitingForHost from "../../components/WaitingForHost/WaintingForHost.jsx";
+import { useNavigate } from "react-router";
 
 function GamePage() {
   let { room, playerName } = useParams();
@@ -18,6 +19,8 @@ function GamePage() {
 
   const [board, setBoard] = useState(null);
   const [currentPiece, setCurrentPiece] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.connect();
@@ -83,6 +86,9 @@ function GamePage() {
         case "Space":
           emitInput("hardDrop");
           break;
+        case "Escape":
+          navigate("/");
+          break;
         default:
           break;
       }
@@ -99,7 +105,7 @@ function GamePage() {
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [room, playerName]);
+  }, [room, playerName, navigate]);
 
   const handleStartClick = () => {
     socket.emit("start-game");

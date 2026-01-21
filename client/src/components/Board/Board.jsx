@@ -13,6 +13,7 @@ export default function Board({ board, activePiece }) {
     J: "blue",
     L: "orange",
     0: "",
+    X: "gray",
   };
   return (
     <div className="board">
