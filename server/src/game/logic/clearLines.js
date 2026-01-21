@@ -4,7 +4,7 @@ export default function clearLines(board) {
   const remaining = [];
   for (let r = 0; r < board.length; r++) {
     const isFull = board[r].every((cell) => cell !== 0);
-    if (isFull) rowsRemoved.push(r);
+    if (isFull && board[r][0] !== "X") rowsRemoved.push(r);
     else remaining.push(board[r]);
   }
   const newRows = Array.from({ length: rowsRemoved.length }, () =>
