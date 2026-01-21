@@ -5,11 +5,10 @@ import JoinGameForm from "../../components/JoinGameForm/JoinGameForm.jsx";
 function HomePage() {
   return (
     <>
-      <Spectrums />
       <EmptyBoard>
         <JoinGameForm />
       </EmptyBoard>
-      <NextPiece />
+      {/* <NextPiece /> */}
     </>
   );
 }

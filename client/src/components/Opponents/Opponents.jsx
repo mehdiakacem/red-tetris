@@ -7,10 +7,10 @@ function Opponents({ opponents, hostId }) {
     <div className="opponents">
       {opponents.map((player) => (
         <div key={player.id}>
-          <span>{player.name}</span>
-          {player.id === hostId && " (Host)"}
+          <span>
+            {player.id === hostId ? player.name + " (Host)" : player.name}
+          </span>
           <Spectrum spectrum={player.spectrum || emptySpectrum} />
-          
         </div>
       ))}
     </div>
