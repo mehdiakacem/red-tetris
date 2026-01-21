@@ -41,7 +41,20 @@ export default class Game {
       case "down":
         test.move(0, 1);
         break;
-      // case hardDrob
+      case "hardDrop":
+        while (
+          isValidPosition(
+            test.matrix,
+            player.board,
+            test.position.x,
+            test.position.y + 1
+          )
+        ) {
+          piece.move(0, 1);
+          test.move(0, 1);
+        }
+        this.lockCurrentPiece(player);
+        return;
     }
 
     if (
@@ -84,11 +97,13 @@ export default class Game {
 
   lockCurrentPiece(player) {
     const newBoard = lockPiece(player.board, player.currentPiece);
-    
+
     // clear lines
-    const result = clearLines(newBoard)
-    
+    const result = clearLines(newBoard);
     player.setBoard(result.board);
+    if (result.linesCleared > 0) {
+      // handle line clear
+    }
     player.clearPiece();
     this.spawnPieceForAll();
   }
