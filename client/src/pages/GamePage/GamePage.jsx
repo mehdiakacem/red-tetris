@@ -8,6 +8,7 @@ import EmptyBoard from "../../components/EmptyBoard/EmptyBoard.jsx";
 import StartButton from "../../components/StartButton/StartButton.jsx";
 import WaitingForHost from "../../components/WaitingForHost/WaintingForHost.jsx";
 import { useNavigate } from "react-router";
+import "./GamePage.css";
 
 function GamePage() {
   let { room, playerName } = useParams();
@@ -16,11 +17,14 @@ function GamePage() {
 
   const isHost = socket.id === hostId;
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [isGameEnded, setIsGameEnded] = useState(false);
 
   const [board, setBoard] = useState(null);
   const [currentPiece, setCurrentPiece] = useState(null);
 
   const navigate = useNavigate();
+
+  const [isAlive, setIsAlive] = useState(true);
 
   useEffect(() => {
     socket.connect();
@@ -46,6 +50,8 @@ function GamePage() {
 
     socket.on("game-started", ({ game }) => {
       setIsGameStarted(game.started);
+      setIsGameEnded(false);
+      setIsAlive(true);
       const player = game.players.find((p) => p.id === socket.id);
       setBoard(player.board);
       setCurrentPiece(player.currentPiece);
@@ -57,6 +63,21 @@ function GamePage() {
         setBoard(player.board);
         setCurrentPiece(player.currentPiece);
         setOpponents(game.players.filter((player) => player.id !== socket.id));
+        if (!player.alive) setIsAlive(false);
+      }
+    });
+
+    socket.on("game-over", ({ game }) => {
+      console.log(game);
+      const player = game.players.find((p) => p.id === socket.id);
+
+      console.log("GAME OVER");
+      if (player) {
+        setBoard(player.board);
+        setCurrentPiece(player.currentPiece);
+        setOpponents(game.players.filter((player) => player.id !== socket.id));
+        if (!player.alive) setIsAlive(false);
+        setIsGameEnded(true);
       }
     });
 
@@ -69,6 +90,7 @@ function GamePage() {
 
     const handleKeyDown = (e) => {
       if (e.repeat) return; // prevent key hold spam
+
 
       switch (e.code) {
         case "ArrowLeft":
@@ -102,6 +124,7 @@ function GamePage() {
       socket.off("player-left");
       socket.off("game-started");
       socket.off("game-tick");
+      socket.off("game-over");
       socket.disconnect();
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -117,7 +140,48 @@ function GamePage() {
         <span>{playerName}</span>
         {isHost && " (Host)"}
         {isGameStarted ? (
-          <Board board={board} activePiece={currentPiece} />
+          <div className="board-container">
+            {!isAlive ? (
+              <div className="game-over-screen">
+                {isGameEnded ? (
+                  <div>
+                    <p>You lost</p>
+                    {isHost ? (
+                      <StartButton
+                        onClick={handleStartClick}
+                        restart={isGameEnded}
+                      />
+                    ) : (
+                      <WaitingForHost restart={isGameEnded} />
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <p>you lost</p>
+                    <p>waiting for game to end...</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              isGameEnded && (
+                <div className="game-over-screen">
+                  <div>
+                    <p>You won</p>
+                    {isHost ? (
+                      <StartButton
+                        onClick={handleStartClick}
+                        restart={isGameEnded}
+                      />
+                    ) : (
+                      <WaitingForHost restart={isGameEnded} />
+                    )}
+                  </div>
+                </div>
+              )
+            )}
+
+            <Board board={board} activePiece={currentPiece} />
+          </div>
         ) : (
           <EmptyBoard>
             {isHost ? (

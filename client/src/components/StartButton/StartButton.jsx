@@ -1,9 +1,11 @@
 import "./StartButton.css";
 
-function StartButton({ onClick }) {
+function StartButton({ onClick, restart }) {
   return (
     <div className="start-button-container">
-      <button className="start-button" onClick={onClick}>START</button>
+      <button className="start-button" onClick={onClick}>
+        {restart ? "RESTART" : "START"}
+      </button>
     </div>
   );
 }

@@ -96,6 +96,40 @@ export default class Game {
     });
   }
 
+  lockCurrentPiece(player) {
+    let newBoard = lockPiece(player.board, player.currentPiece);
+
+    // clear lines
+    const result = clearLines(newBoard);
+    player.setBoard(result.board);
+    if (result.linesCleared > 0) {
+      // handle line clear
+      this.handleLineClear(player.id, result.linesCleared);
+    }
+
+    // apply penalties
+    const penalties = player.consumePenaltyLines();
+    if (penalties > 0) {
+      newBoard = addGarbageLines(player.board, penalties);
+      player.setBoard(newBoard);
+    }
+
+    // Spaw next pice
+    player.clearPiece();
+    const piece = this.spawnPieceForAll();
+    if (
+      !isValidPosition(
+        piece.matrix,
+        player.board,
+        piece.position.x,
+        piece.position.y
+      )
+    ) {
+      this.killPlayer(player.id);
+      // player.clearPiece();
+    }
+  }
+
   handleLineClear(clearingPlayerId, linesCleared) {
     if (linesCleared <= 0) return;
 
@@ -108,29 +142,6 @@ export default class Game {
         player.addPenaltyLines(penalty);
       }
     });
-  }
-
-  lockCurrentPiece(player) {
-    let newBoard = lockPiece(player.board, player.currentPiece);
-
-    // clear lines
-    const result = clearLines(newBoard);
-    player.setBoard(result.board);
-    if (result.linesCleared > 0) {
-      // handle line clear
-      this.handleLineClear(player.id, result.linesCleared);
-    }
-    
-    // apply penalties
-    const penalties = player.consumePenaltyLines();
-    if (penalties > 0) {
-      newBoard = addGarbageLines(player.board, penalties)
-      player.setBoard(newBoard)
-    }
-
-
-    player.clearPiece();
-    this.spawnPieceForAll();
   }
 
   addPlayer(player) {
@@ -178,8 +189,10 @@ export default class Game {
   resetPlayers() {
     this.players.forEach((player) => {
       player.alive = true;
-      player.board = player.createEmptyBoard();
+      player.setBoard(player.createEmptyBoard());
       player.pendingPenaltyLines = 0;
+      player.queue = [];
+      player.clearPiece();
     });
   }
 
@@ -204,11 +217,7 @@ export default class Game {
         player.spawnPiece(type);
       }
     });
-    return {
-      type,
-      rotation: 0,
-      position: { x: 3, y: 0 },
-    };
+    return new Piece(type);
   }
 
   handleLineClear(clearingPlayerId, linesCleared) {

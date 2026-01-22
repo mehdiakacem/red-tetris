@@ -1,0 +1,31 @@
+.game-over-screen {
+    position: absolute;
+    background-color: rgb(24, 24, 24, 0.6);
+    width: 300px;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* .game-over-screen div {
+    color: black;
+    background-color: gray;
+    padding: 20px;
+} */
+
+
+@media screen and (max-width: 768px) {
+  .game-over-screen {
+    width: 260px;
+    height: 520px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .game-over-screen {
+    width: 240px;
+    height: 480px;
+  }
+}
