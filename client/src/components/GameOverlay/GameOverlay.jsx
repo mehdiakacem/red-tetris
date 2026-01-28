@@ -1,49 +1,45 @@
+import { GAME_STATUS } from "../../constants/gameStatus";
 import StartButton from "../StartButton/StartButton";
 import WaitingForHost from "../WaitingForHost/WaintingForHost";
 import "./GameOverlay.css";
 
-function GameOverlay({ isAlive, isGameEnded, isHost, onRestart }) {
+function GameOverlay({ status, isHost, onRestart }) {
+  switch (status) {
+    case GAME_STATUS.ELIMINATED:
+      return (
+        <div className="game-overlay">
+          <p>You lost</p>
+          <p>Waiting for game to end...</p>
+        </div>
+      );
 
-  // Player lost but game still running
-  if (!isAlive && !isGameEnded) {
-    return (
-      <div className="game-overlay">
-        <p>You lost</p>
-        <p>Waiting for game to end...</p>
-      </div>
-    );
+    case GAME_STATUS.ENDED:
+      return (
+        <div className="game-overlay">
+          <p>You lost</p>
+          {isHost ? (
+            <StartButton onClick={onRestart} restart />
+          ) : (
+            <WaitingForHost restart />
+          )}
+        </div>
+      );
+
+    case GAME_STATUS.WON:
+      return (
+        <div className="game-overlay">
+          <p>You won 🎉</p>
+          {isHost ? (
+            <StartButton onClick={onRestart} restart />
+          ) : (
+            <WaitingForHost restart />
+          )}
+        </div>
+      );
+
+    default:
+      return null;
   }
-
-  // Game ended — player lost
-  if (!isAlive && isGameEnded) {
-    return (
-      <div className="game-overlay">
-        <p>You lost</p>
-        {isHost ? (
-          <StartButton onClick={onRestart} restart />
-        ) : (
-          <WaitingForHost restart />
-        )}
-      </div>
-    );
-  }
-
-  // Game ended — player won
-  if (isAlive && isGameEnded) {
-    return (
-      <div className="game-overlay">
-        <p>You won 🎉</p>
-        {isHost ? (
-          <StartButton onClick={onRestart} restart />
-        ) : (
-          <WaitingForHost restart />
-        )}
-      </div>
-    );
-  }
-
-  // No overlay
-  return null;
 }
 
 export default GameOverlay;

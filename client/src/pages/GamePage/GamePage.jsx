@@ -8,20 +8,16 @@ import { useNavigate } from "react-router";
 import "./GamePage.css";
 import { useGameSocket } from "../../hooks/useGameSocket.js";
 import { useKeyboardInput } from "../../hooks/useKeyboardInput.js";
+import { GAME_STATUS } from "../../constants/gameStatus";
 
 function GamePage() {
   let { room, playerName } = useParams();
   const navigate = useNavigate();
 
-  const {
-    socket,
-    game,
-    opponents,
-    hostId,
-    isAlive,
-    isGameEnded,
-    isGameStarted,
-  } = useGameSocket({ room, playerName });
+  const { socket, game, opponents, hostId, status } = useGameSocket({
+    room,
+    playerName,
+  });
 
   const isHost = socket.id === hostId;
 
@@ -39,11 +35,10 @@ function GamePage() {
       <span>
         {playerName} {isHost && "(Host)"}
       </span>
-      {isGameStarted ? (
+      {status !== GAME_STATUS.WAITING ? (
         <BoardSection
           player={player}
-          isAlive={isAlive}
-          isGameEnded={isGameEnded}
+          status={status}
           isHost={isHost}
           onRestart={handleStartClick}
         />

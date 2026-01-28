@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
+import { GAME_STATUS } from "../constants/gameStatus";
 
 export function useGameSocket({ room, playerName }) {
   const [opponents, setOpponents] = useState([]);
   const [hostId, setHostId] = useState(null);
   const [game, setGame] = useState(null);
-  const [isAlive, setIsAlive] = useState(true);
-  const [isGameStarted, setIsGameStarted] = useState(false);
-  const [isGameEnded, setIsGameEnded] = useState(false);
+  const [status, setStatus] = useState(GAME_STATUS.WAITING);
 
   useEffect(() => {
     socket.connect();
@@ -28,23 +27,28 @@ export function useGameSocket({ room, playerName }) {
 
     socket.on("game-started", ({ game }) => {
       setGame(game);
-      setIsGameStarted(true);
-      setIsGameEnded(false);
-      setIsAlive(true);
+      setStatus(GAME_STATUS.PLAYING);
     });
 
     socket.on("game-tick", ({ game }) => {
       setGame(game);
       const me = game.players.find((p) => p.id === socket.id);
-      if (me && !me.alive) setIsAlive(false);
+      if (!me) return;
+      if (!me.alive) {
+        setStatus(GAME_STATUS.ELIMINATED);
+      } else {
+        setStatus(GAME_STATUS.PLAYING);
+      }
       setOpponents(game.players.filter((p) => p.id !== socket.id));
     });
 
     socket.on("game-over", ({ game }) => {
       setGame(game);
-      setIsGameEnded(true);
+      
       const me = game.players.find((p) => p.id === socket.id);
-      if (me && !me.alive) setIsAlive(false);
+      if (!me) return;
+
+      setStatus(me.alive ? GAME_STATUS.WON : GAME_STATUS.ENDED);
     });
 
     return () => {
@@ -57,8 +61,6 @@ export function useGameSocket({ room, playerName }) {
     game,
     opponents,
     hostId,
-    isAlive,
-    isGameEnded,
-    isGameStarted,
+    status,
   };
 }

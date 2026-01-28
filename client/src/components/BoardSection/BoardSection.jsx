@@ -3,16 +3,14 @@ import GameOverLay from "../GameOverlay/GameOverlay";
 
 export default function BoardSection({
   player,
-  isAlive,
-  isGameEnded,
+  status,
   isHost,
   onRestart,
 }) {
   return (
     <div className="board-container">
       <GameOverLay
-        isAlive={isAlive}
-        isGameEnded={isGameEnded}
+        status={status}
         isHost={isHost}
         onRestart={onRestart}
       />
