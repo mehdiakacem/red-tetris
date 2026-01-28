@@ -1,6 +1,5 @@
-import Board from "../Board/Board"
-import StartButton from "../StartButton/StartButton";
-import WaitingForHost from "../WaitingForHost/WaintingForHost";
+import Board from "../Board/Board";
+import GameOverLay from "../GameOverlay/GameOverlay";
 
 export default function BoardSection({
   player,
@@ -11,38 +10,12 @@ export default function BoardSection({
 }) {
   return (
     <div className="board-container">
-      {!isAlive ? (
-        <div className="game-over-screen">
-          {isGameEnded ? (
-            <div>
-              <p>You lost</p>
-              {isHost ? (
-                <StartButton onClick={onRestart} restart={isGameEnded} />
-              ) : (
-                <WaitingForHost restart={isGameEnded} />
-              )}
-            </div>
-          ) : (
-            <div>
-              <p>you lost</p>
-              <p>waiting for game to end...</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        isGameEnded && (
-          <div className="game-over-screen">
-            <div>
-              <p>You won</p>
-              {isHost ? (
-                <StartButton onClick={onRestart} restart={isGameEnded} />
-              ) : (
-                <WaitingForHost restart={isGameEnded} />
-              )}
-            </div>
-          </div>
-        )
-      )}
+      <GameOverLay
+        isAlive={isAlive}
+        isGameEnded={isGameEnded}
+        isHost={isHost}
+        onRestart={onRestart}
+      />
 
       <Board board={player.board} activePiece={player.currentPiece} />
     </div>

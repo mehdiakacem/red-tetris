@@ -43,12 +43,14 @@ export function useGameSocket({ room, playerName }) {
     socket.on("game-over", ({ game }) => {
       setGame(game);
       setIsGameEnded(true);
+      const me = game.players.find((p) => p.id === socket.id);
+      if (me && !me.alive) setIsAlive(false);
     });
 
     return () => {
-        socket.disconnect()
-        socket.removeAllListeners();
-    }
+      socket.disconnect();
+      socket.removeAllListeners();
+    };
   }, [room, playerName]);
   return {
     socket,
