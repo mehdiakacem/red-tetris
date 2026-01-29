@@ -20,7 +20,7 @@ export default class Game {
     this.bagIndex = 0;
   }
 
-  handleInput(playerId, action) {
+  handleInput(playerId, action, io) {
     const player = this.players.get(playerId);
     if (!player || !player.alive) return;
 
@@ -54,8 +54,7 @@ export default class Game {
           piece.move(0, 1);
           test.move(0, 1);
         }
-        this.lockCurrentPiece(player);
-        return;
+        return this.lockCurrentPiece(player, io);
     }
 
     if (
@@ -72,7 +71,7 @@ export default class Game {
     }
   }
 
-  tick() {
+  tick(io) {
     if (!this.started || this.ended) return;
 
     this.players.forEach((player) => {
@@ -91,12 +90,12 @@ export default class Game {
       ) {
         player.currentPiece.move(0, 1);
       } else {
-        this.lockCurrentPiece(player);
+        this.lockCurrentPiece(player, io);
       }
     });
   }
 
-  lockCurrentPiece(player) {
+  lockCurrentPiece(player, io) {
     let newBoard = lockPiece(player.board, player.currentPiece);
 
     // clear lines
@@ -125,7 +124,8 @@ export default class Game {
         piece.position.y
       )
     ) {
-      this.killPlayer(player.id);
+      this.killPlayer(player.id, io);
+      return -1;
       // player.clearPiece();
     }
   }
@@ -181,9 +181,10 @@ export default class Game {
     return true;
   }
 
-  endedGame() {
+  endedGame(io) {
     this.started = false;
     this.ended = true;
+    io.to(this.room).emit("game-over", { game: this.getPublicState() });
   }
 
   resetPlayers() {
@@ -234,7 +235,7 @@ export default class Game {
     });
   }
 
-  killPlayer(playerId) {
+  killPlayer(playerId, io) {
     const player = this.players.get(playerId);
     if (!player) return;
 
@@ -243,7 +244,7 @@ export default class Game {
     const alivePlayers = [...this.players.values()].filter((p) => p.alive);
 
     if (alivePlayers.length <= 1) {
-      this.endedGame();
+      this.endedGame(io);
     }
   }
 

@@ -5,6 +5,13 @@ import "./GameOverlay.css";
 
 function GameOverlay({ status, isHost, onRestart }) {
   switch (status) {
+    case GAME_STATUS.WAITING:
+      return (
+        <div className="game-overlay">
+          {isHost ? <StartButton onClick={onRestart} /> : <WaitingForHost />}
+        </div>
+      );
+
     case GAME_STATUS.ELIMINATED:
       return (
         <div className="game-overlay">
@@ -34,6 +41,13 @@ function GameOverlay({ status, isHost, onRestart }) {
           ) : (
             <WaitingForHost restart />
           )}
+        </div>
+      );
+
+    case GAME_STATUS.STARTED:
+      return (
+        <div className="game-overlay">
+          <p>Game already started</p>
         </div>
       );
 

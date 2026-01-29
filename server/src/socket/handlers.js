@@ -42,9 +42,9 @@ export function registerSocketHandlers(io, gameManager) {
     socket.on("player-input", ({ action }) => {
       const game = gameManager.getGame(currentRoom);
       if (game.started) {
-        game.handleInput(socket.id, action);
-
-        socket.emit("game-tick", { game: game.getPublicState() });
+        let result = game.handleInput(socket.id, action, io);
+        if  (result !== -1)
+          socket.emit("game-tick", { game: game.getPublicState() });
       }
     });
 

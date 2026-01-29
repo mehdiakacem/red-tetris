@@ -15,10 +15,8 @@ server.listen(PORT, () => {
 
 setInterval(() => {
   gameManager.getAllGames().forEach((game) => {
-    game.tick();
+    game.tick(io);
     if (game.started && !game.ended)
       io.to(game.room).emit("game-tick", { game: game.getPublicState() });
-    if (game.ended)
-      io.to(game.room).emit("game-over", { game: game.getPublicState() });
   });
 }, 700);

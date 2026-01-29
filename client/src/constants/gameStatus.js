@@ -4,4 +4,5 @@ export const GAME_STATUS = {
   ELIMINATED: "ELIMINATED",  // player lost, game still running
   WON: "WON",                // player won
   ENDED: "ENDED",            // game ended, player lost
+  STARTED: "STARTED"
 };

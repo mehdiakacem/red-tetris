@@ -15,7 +15,7 @@ export default function BoardSection({
         onRestart={onRestart}
       />
 
-      <Board board={player.board} activePiece={player.currentPiece} />
+      <Board board={player?.board} activePiece={player?.currentPiece} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ export function useGameSocket({ room, playerName }) {
   const [opponents, setOpponents] = useState([]);
   const [hostId, setHostId] = useState(null);
   const [game, setGame] = useState(null);
-  const [status, setStatus] = useState(GAME_STATUS.WAITING);
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
     socket.connect();
@@ -18,6 +18,11 @@ export function useGameSocket({ room, playerName }) {
     socket.on("player-joined", ({ players, hostId }) => {
       setOpponents(players.filter((p) => p.id !== socket.id));
       setHostId(hostId);
+      setStatus(GAME_STATUS.WAITING)
+    });
+
+    socket.on("join-denied", () => {
+      setStatus(GAME_STATUS.STARTED);
     });
 
     socket.on("player-left", ({ id, hostId }) => {
@@ -44,7 +49,7 @@ export function useGameSocket({ room, playerName }) {
 
     socket.on("game-over", ({ game }) => {
       setGame(game);
-      
+
       const me = game.players.find((p) => p.id === socket.id);
       if (!me) return;
 
