@@ -5,10 +5,16 @@ export function registerSocketHandlers(io, gameManager) {
     let currentRoom = null;
 
     socket.on("join-room", ({ room, playerName }) => {
+      const game = gameManager.getOrCreateGame(room);
+      if (game.started) {
+        socket.emit("join-denied", {
+          reason: "Game already started",
+        });
+        return;
+      }
       socket.join(room);
       currentRoom = room;
 
-      const game = gameManager.getOrCreateGame(room);
       const player = new Player(socket.id, playerName);
 
       game.addPlayer(player);
@@ -26,7 +32,7 @@ export function registerSocketHandlers(io, gameManager) {
     socket.on("start-game", () => {
       const game = gameManager.getGame(currentRoom);
       if (!game) return;
-      
+
       const started = game.startGame(socket.id);
       if (!started) return;
 
@@ -36,9 +42,9 @@ export function registerSocketHandlers(io, gameManager) {
     socket.on("player-input", ({ action }) => {
       const game = gameManager.getGame(currentRoom);
       if (game.started) {
-        game.handleInput(socket.id, action);
-
-        socket.emit("game-tick", {game: game.getPublicState()})
+        let result = game.handleInput(socket.id, action, io);
+        if  (result !== -1)
+          socket.emit("game-tick", { game: game.getPublicState() });
       }
     });
 

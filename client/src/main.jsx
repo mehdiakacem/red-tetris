@@ -8,13 +8,13 @@ import GamePage from "./pages/GamePage/GamePage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Layout>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path=":room/:playerName" element={<GamePage />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path=":room/:playerName" element={<GamePage />} />
+        </Routes>
+      </Layout>
     </BrowserRouter>
-    </Layout>
   </StrictMode>
 );
