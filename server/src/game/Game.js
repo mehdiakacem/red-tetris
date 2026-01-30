@@ -3,6 +3,8 @@ import { addGarbageLines } from "./logic/addGarbageLines.js";
 import clearLines from "./logic/clearLines.js";
 import isValidPosition from "./logic/isValidPosition.js";
 import lockPiece from "./logic/lockPiece.js";
+import move from "./logic/move.js";
+import rotate from "./logic/rotate.js";
 
 const PIECE_TYPES = ["I", "O", "T", "S", "Z", "J", "L"];
 
@@ -28,19 +30,20 @@ export default class Game {
     if (!piece) return;
 
     const test = piece.clone();
+    let newPiece;
 
     switch (action) {
       case "left":
-        test.move(-1, 0);
+        newPiece = move(piece, -1, 0);
         break;
       case "right":
-        test.move(1, 0);
+        newPiece = move(piece, 1, 0);
         break;
       case "rotate":
-        test.rotate(1);
+        newPiece = rotate(piece);
         break;
       case "down":
-        test.move(0, 1);
+        newPiece = move(piece, 0, 1);
         break;
       case "hardDrop":
         while (
@@ -48,7 +51,7 @@ export default class Game {
             test.matrix,
             player.board,
             test.position.x,
-            test.position.y + 1
+            test.position.y + 1,
           )
         ) {
           piece.move(0, 1);
@@ -59,15 +62,13 @@ export default class Game {
 
     if (
       isValidPosition(
-        test.matrix,
+        newPiece.matrix,
         player.board,
-        test.position.x,
-        test.position.y
+        newPiece.position.x,
+        newPiece.position.y,
       )
     ) {
-      piece.position = test.position;
-      piece.rotation = test.rotation;
-      piece.matrix = test.matrix;
+      player.setPiece(newPiece);
     }
   }
 
@@ -85,7 +86,7 @@ export default class Game {
           test.matrix,
           player.board,
           test.position.x,
-          test.position.y
+          test.position.y,
         )
       ) {
         player.currentPiece.move(0, 1);
@@ -121,7 +122,7 @@ export default class Game {
         piece.matrix,
         player.board,
         piece.position.x,
-        piece.position.y
+        piece.position.y,
       )
     ) {
       this.killPlayer(player.id, io);
