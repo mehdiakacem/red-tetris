@@ -1,16 +1,9 @@
-import rotateMatrix from "./logic/rotateMatrix.js";
-
 export default class Piece {
   constructor(type) {
     this.type = type;
     this.rotation = 0;
     this.matrix = TETROMINOS[type];
     this.position = { x: Math.floor((10 - this.matrix[0].length) / 2), y: 0 };
-  }
-
-  rotate(direction = 1) {
-    this.rotation = (this.rotation + direction + 4) % 4;
-    this.matrix = rotateMatrix(this.matrix);
   }
 
   setRotation(rotation) {
