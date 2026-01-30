@@ -33,6 +33,10 @@ export default class Player {
     this.updateSpectrum();
   }
 
+  setPiece(piece) {
+    this.currentPiece = piece;
+  }
+
   updateSpectrum() {
     const heights = Array(10).fill(0);
     for (let col = 0; col < 10; col++) {
